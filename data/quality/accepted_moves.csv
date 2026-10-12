@@ -1,0 +1,2 @@
+rate_date,currency_code,reason
+2026-01-27,IRR,"-96.1% in one day. Quantity unchanged (10000 IRR) and NBG's own published diff is -0.6165, so this is NBG's rate as published, not a parsing error. 0.6415 GEL per 10000 IRR implies ~42000 IRR per USD; 0.0250 implies ~1.08M, so NBG switched which IRR rate it publishes."
