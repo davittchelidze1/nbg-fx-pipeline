@@ -86,6 +86,22 @@ pipeline stopping or warning:
 7. **Re-running changes nothing.** The daily run over a week it has already
    stored took 9.7 s and changed zero files.
 
+## BigQuery, measured
+
+- **First load:** 21,608 rows, staged and `MERGE`d in 19 s. Loading the same
+  rows again: 0 inserted, 0 updated.
+- **Size:** 2.1 MB in 25 monthly partitions, 0 duplicate keys.
+- **Cost:** each daily `MERGE` bills 20 MiB, which is BigQuery's 10 MiB minimum
+  for each of the two tables it touches, not the size of the data. That's about
+  $0.0001 a run on demand, and the whole 30-day run is under 0.05% of the free
+  1 TiB a month.
+- **Two engines, one answer:** the BigQuery view and the DuckDB report are
+  written separately and give the same 30-day moves (EUR -3.47%, GBP -2.26%,
+  USD -0.37% on 13 Oct 2026).
+- **The z-score is per currency.** USD/GEL usually moves by hundredths of a
+  percent, so +1.05% on 2025-08-14 scores z = 57 against its previous 60 moves.
+  It reversed (-0.93%) two days later.
+
 ## Quality checks
 
 An error stops the run before anything is written, so the Actions run goes red
@@ -133,6 +149,13 @@ GCP_PROJECT=<project> python -m pipeline load   # reload every stored row
 repo's Actions variables (`GCP_PROJECT`, `GCP_WIF_PROVIDER`,
 `GCP_SERVICE_ACCOUNT`). They're not secrets: none of them grants access on its
 own.
+
+## How it ends
+
+`daily.yml` has a fixed end date. The first run after 12 Nov 2026 disables the
+workflow, then `terraform destroy` removes the dataset, the service account and
+the identity pool. The data stays here: the CSVs are the source of truth, and
+`python -m pipeline load` rebuilds the warehouse from them at any time.
 
 ## Layout
 
