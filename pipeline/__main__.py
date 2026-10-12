@@ -123,6 +123,11 @@ def main(argv=None) -> None:
         known = storage.known_dates()
         if not known:
             sys.exit("No stored rates yet, run a backfill first")
+        if GCP_PROJECT and not args.no_load:
+            from pipeline import warehouse
+
+            warehouse.ensure_tables()
+            print("BigQuery reachable, tables in place")
         ingest(max(known) - timedelta(days=LOOKBACK_DAYS), extract.tomorrow_in_tbilisi(), load=not args.no_load)
     elif args.cmd == "backfill":
         ingest(args.start, args.end or extract.tomorrow_in_tbilisi(), load=not args.no_load)

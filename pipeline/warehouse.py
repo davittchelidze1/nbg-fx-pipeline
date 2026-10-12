@@ -40,12 +40,21 @@ def _to_json(row: dict) -> dict:
     }
 
 
-def load(rows: list[dict]) -> dict:
+def _client() -> bigquery.Client:
     if not GCP_PROJECT:
         raise RuntimeError("GCP_PROJECT is not set")
+    return bigquery.Client(project=GCP_PROJECT, location=BQ_LOCATION)
 
-    client = bigquery.Client(project=GCP_PROJECT, location=BQ_LOCATION)
-    client.query(_sql("tables.sql")).result()
+
+def ensure_tables(client: bigquery.Client | None = None) -> None:
+    """Create or refresh tables and the view. Run at the start of every daily
+    run, so broken credentials fail the run even on days with no new rates."""
+    (client or _client()).query(_sql("tables.sql")).result()
+
+
+def load(rows: list[dict]) -> dict:
+    client = _client()
+    ensure_tables(client)
 
     staging = f"{GCP_PROJECT}.{BQ_DATASET}._stg_daily_rates"
     client.load_table_from_json(
