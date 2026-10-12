@@ -33,7 +33,8 @@ def load_raw(day: date) -> dict | None:
 def save_raw(payload: dict) -> None:
     path = raw_path(valid_date(payload))
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    # Explicit LF so files written on Windows match the ones the Linux runner writes.
+    path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
 
 
 def _parse(row: dict) -> dict:

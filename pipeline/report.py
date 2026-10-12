@@ -176,11 +176,11 @@ def update_readme(markdown: str) -> None:
     text = README.read_text(encoding="utf-8")
     head, rest = text.split(START, 1)
     _, tail = rest.split(END, 1)
-    README.write_text(f"{head}{START}\n{markdown}\n{END}{tail}", encoding="utf-8")
+    README.write_text(f"{head}{START}\n{markdown}\n{END}{tail}", encoding="utf-8", newline="\n")
 
 
 def build() -> None:
     con = _connect()
     DOCS_DIR.mkdir(exist_ok=True)
-    (DOCS_DIR / "usd_eur.svg").write_text(build_chart(con), encoding="utf-8")
+    (DOCS_DIR / "usd_eur.svg").write_text(build_chart(con), encoding="utf-8", newline="\n")
     update_readme(build_markdown(con))
