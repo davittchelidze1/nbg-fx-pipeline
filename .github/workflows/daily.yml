@@ -1,0 +1,78 @@
+name: daily rates
+
+on:
+  schedule:
+    # NBG publishes next-day rates on business days in the evening (Tbilisi).
+    # 18:30 UTC = 22:30 Tbilisi, comfortably after publication.
+    - cron: "30 18 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write   # commit the new data
+  id-token: write   # OIDC token for keyless GCP auth
+  actions: write    # lets the job switch itself off after the run window
+
+concurrency:
+  group: daily-rates
+  cancel-in-progress: false
+
+env:
+  # A fixed 30-day live run. After this date the next run disables the workflow.
+  RUN_UNTIL: "2026-11-12"
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check the run window
+        id: window
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [[ "$(date -u +%F)" > "$RUN_UNTIL" ]]; then
+            echo "The 30-day run ended on $RUN_UNTIL. Disabling this workflow."
+            gh workflow disable daily.yml --repo "$GITHUB_REPOSITORY"
+            echo "active=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "active=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v7
+        if: steps.window.outputs.active == 'true'
+
+      - uses: actions/setup-python@v7
+        if: steps.window.outputs.active == 'true'
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        if: steps.window.outputs.active == 'true'
+        run: pip install -r requirements.txt
+
+      - name: Authenticate to Google Cloud (no keys)
+        if: steps.window.outputs.active == 'true'
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+
+      - name: Extract, check, store, load to BigQuery, report
+        id: pipeline
+        if: steps.window.outputs.active == 'true'
+        env:
+          GCP_PROJECT: ${{ vars.GCP_PROJECT }}
+        run: python -m pipeline run
+
+      - name: Commit new or revised rates
+        if: steps.window.outputs.active == 'true' && steps.pipeline.outputs.changed != '0'
+        env:
+          MESSAGE: ${{ steps.pipeline.outputs.message }}
+        run: |
+          git config user.name "Davit Tchelidze"
+          git config user.email "241375553+davittchelidze1@users.noreply.github.com"
+          git add data docs README.md
+          git commit -m "data: ${MESSAGE}"
+          git pull --rebase --quiet
+          git push
