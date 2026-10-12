@@ -1,0 +1,16 @@
+[project]
+name = "nbg-fx-pipeline"
+version = "0.1.0"
+description = "Daily pipeline for official National Bank of Georgia exchange rates"
+requires-python = ">=3.12"
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["E501"]  # the formatter owns line length; long SVG strings stay readable
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
