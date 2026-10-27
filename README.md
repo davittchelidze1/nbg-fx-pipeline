@@ -11,21 +11,21 @@ the history are those runs; the numbers below are rebuilt by every one of them.
 <img src="docs/usd_eur.svg" alt="GEL per USD and EUR over the last year" width="100%">
 
 <!-- report:start -->
-**Rates valid for Tuesday, 27 October 2026**
+**Rates valid for Wednesday, 28 October 2026**
 
 | Currency | GEL | 1 day | 30 days |
 |---|---:|---:|---:|
-| 🇺🇸 1 USD | 2.5966 | ▼ 0.02% | ▼ 0.34% |
-| 🇪🇺 1 EUR | 2.9082 | ▼ 0.03% | ▼ 1.86% |
-| 🇬🇧 1 GBP | 3.4665 | ▼ 0.24% | ▲ 0.36% |
-| 🇹🇷 1 TRY | 0.0522 | 0.00% | ▼ 1.88% |
-| 🇷🇺 100 RUB | 3.2221 | ▼ 0.05% | ▲ 4.39% |
-| 🇦🇿 1 AZN | 1.5277 | 0.00% | ▼ 0.33% |
-| 🇦🇲 1,000 AMD | 7.1828 | ▼ 0.07% | ▲ 0.21% |
+| 🇺🇸 1 USD | 2.5960 | ▼ 0.02% | ▼ 0.36% |
+| 🇪🇺 1 EUR | 2.8943 | ▼ 0.48% | ▼ 2.33% |
+| 🇬🇧 1 GBP | 3.4571 | ▼ 0.27% | ▲ 0.09% |
+| 🇹🇷 1 TRY | 0.0521 | ▼ 0.19% | ▼ 2.07% |
+| 🇷🇺 100 RUB | 3.2175 | ▼ 0.14% | ▲ 4.24% |
+| 🇦🇿 1 AZN | 1.5271 | ▼ 0.04% | ▼ 0.37% |
+| 🇦🇲 1,000 AMD | 7.1736 | ▼ 0.13% | ▲ 0.08% |
 
-Biggest moves against the lari over 30 days: **IRR** -25.3%, **EGP** -7.9%, **RUB** +4.4%.
+Biggest moves against the lari over 30 days: **IRR** -26.3%, **EGP** -7.8%, **BRL** -4.7%.
 
-<sub>516 rate dates · 21,986 rows · history from 01 Oct 2024 · 1 quality warning in the last 30 days ([log](data/quality/checks.csv))</sub>
+<sub>517 rate dates · 22,028 rows · history from 01 Oct 2024 · 2 quality warnings in the last 30 days ([log](data/quality/checks.csv))</sub>
 <!-- report:end -->
 
 ## How it works
